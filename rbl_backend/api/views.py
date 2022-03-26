@@ -47,6 +47,7 @@ def get_all_dataset(request):
 
         serializer = DatasetSerializer(datasets, many = True)
         
+        logging.info("Data Fetched Successfully")
         return set_http_response(data=serializer.data)
 
     except Exception as ex:
