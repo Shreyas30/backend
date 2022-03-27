@@ -1,5 +1,6 @@
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, JsonResponse
+from rest_framework.response import Response
 
 def set_http_response(data=None, error=None, content_type = "application/json"):
     if error:
@@ -11,8 +12,7 @@ def set_http_response(data=None, error=None, content_type = "application/json"):
         "success": success,
         "error":error
     }
-    json_response = JSONRenderer().render(res)
-    return HttpResponse(json_response, content_type = content_type)
+    return Response(res)
 
 def set_json_response(data=None, error=None):
     if error:

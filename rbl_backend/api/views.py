@@ -12,10 +12,7 @@ import logging
 @api_view(['POST'])
 def insert_dataset(request):
     try:
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        serializer = DatasetSerializer(data = python_data)
+        serializer = DatasetSerializer(data = request.data)
 
         if serializer.is_valid():
             serializer.save()
