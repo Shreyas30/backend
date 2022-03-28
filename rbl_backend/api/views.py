@@ -66,9 +66,9 @@ def describe_dataset(request):
             dataset = import_dataset_from_db(serializer.data['username'])
             describe = dataset.describe()
             print(describe)
-
             res = {
-            "msg": "Describe Functionality Implemented Successfully"
+            "msg": "Describe Functionality Implemented Successfully",
+            "describe": describe.to_json()
             }
             logging.info("Describe Functionality Implemented Successfully")
 
