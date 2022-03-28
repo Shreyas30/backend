@@ -1,34 +1,55 @@
 import io
-from api.models import Datasets
+from api.models import UsersModel
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
-from api.serializers import DatasetSerializer
-from api.utils import set_http_response
+from api.serializers import UserSerializer
+from api.utils import (
+    set_http_response,
+    send_dataset_to_db,
+    import_dataset_from_db
+) 
 from api.constants import INSERT_DATASET_ERROR, FETCH_DATASET_ERROR
 import logging
-
 
 # Create your views here.
 @api_view(['POST'])
 def insert_dataset(request):
     try:
-        serializer = DatasetSerializer(data = request.data)
-
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            try:
+                dataset = request.FILES.get("dataset")
+                if not dataset:
+                    res = {
+                        "msg":"Dataset file is required"
+                    }
+                    return set_http_response(error=res)
 
-            res = {
-                "msg":"Data Saved Successfully"
-            }
+                collection_name = serializer.validated_data["username"]
 
-            logging.info("Data Saved Successfully")
+                no_of_rows = send_dataset_to_db(dataset, collection_name)
 
-            return set_http_response(data=res)
+                logging.info("Inserted the dataset with %s rows.", no_of_rows)
+
+                serializer.save()
+                res = {
+                    "msg":"Data Saved Successfully"
+                }
+
+                logging.info("Data Saved Successfully")
+
+                return set_http_response(data=res)
+
+            except Exception as ex:
+                logging.error("Error in saving the dataset. Exception: %s", str(ex))
+                raise ex
+                
         else:
+            logging.info("Error in saving Dataset. Error: ", serializer.errors)
             return set_http_response(error=serializer.errors)
 
     except Exception as ex:
-        logging.error("Error in saving the dataset. Exception: %s", str(ex))
+        logging.error("Error in inserting User Records. Exception: %s", str(ex))
 
         res = {
             "msg" : INSERT_DATASET_ERROR
@@ -36,17 +57,27 @@ def insert_dataset(request):
 
         return set_http_response(error=res)
 
-
-@api_view(['GET'])
-def get_all_dataset(request):
+@api_view(['POST'])
+def describe_dataset(request):
     try:
-        datasets = Datasets.objects.all()
+        serializer = UserSerializer(data=request.data)
 
-        serializer = DatasetSerializer(datasets, many = True)
+        if serializer.is_valid():
+            dataset = import_dataset_from_db(serializer.data['username'])
+            describe = dataset.describe()
+            print(describe)
+
+            res = {
+            "msg": "Describe Functionality Implemented Successfully"
+            }
+            logging.info("Describe Functionality Implemented Successfully")
+
+            return set_http_response(data=res)
+
+        else:
+            logging.error("Error in showing dataset describe. Error: %s", serializer.errors)
+            return set_http_response(error=serializer.errors)
         
-        logging.info("Data Fetched Successfully")
-        return set_http_response(data=serializer.data)
-
     except Exception as ex:
 
         logging.error("Error in fetching the dataset. Exception: %s", str(ex))

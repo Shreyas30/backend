@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from api.models import Datasets
+from api.models import UsersModel
 
-class DatasetSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length = 100)
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length = 100)
 
     def create(self, validated_data):
-        return Datasets.objects.create(**validated_data)
+        return UsersModel.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
