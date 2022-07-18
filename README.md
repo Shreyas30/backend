@@ -6,6 +6,3 @@
 2. Make branch out of master branch locally and start working
 3. Push that branch to remote. And keep pushing any changes whatsover.
 4. Raise a Pull Request and assigne a code review to some one.
-5. Get the branch merged to master once the code review is done
-5. Get the branch merged to master once the code review is done
-5. Get the branch merged to master once the code review is done.
