@@ -8,3 +8,4 @@
 4. Raise a Pull Request and assigne a code review to some one.
 5. Get the branch merged to master once the code review is done
 5. Get the branch merged to master once the code review is done
+5. Get the branch merged to master once the code review is done.
